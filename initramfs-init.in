@@ -563,7 +563,8 @@ if [ -n "$KOPT_root" ]; then
 		fi
 	done
 	sync
-	exec /bin/busybox switch_root $sysroot $chart_init "$KOPT_init" $KOPT_init_args
+	# re-open console here in case the console backend driver was in the boot drivers and mdev has found it
+	exec /bin/busybox -c /dev/console switch_root $sysroot $chart_init "$KOPT_init" $KOPT_init_args
 	echo "initramfs emergency recovery shell launched"
 	exec /bin/busybox sh
 fi
@@ -844,7 +845,8 @@ sync
 
 [ "$KOPT_splash" = "init" ] && echo exit > $sysroot/$splashfile
 echo ""
-exec /bin/busybox switch_root $sysroot $chart_init "$KOPT_init" $KOPT_init_args
+# re-open console here in case the console backend driver was in the boot drivers and mdev has found it
+exec /bin/busybox switch_root -c /dev/console $sysroot $chart_init "$KOPT_init" $KOPT_init_args
 
 [ "$KOPT_splash" != "no" ] && echo exit > $sysroot/$splashfile
 echo "initramfs emergency recovery shell launched"
